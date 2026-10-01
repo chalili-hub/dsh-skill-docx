@@ -1,0 +1,7 @@
+# 统一使用 LF：技能文件会被 DSH 直接读取，Python 脚本也可能在 Linux 上运行，
+# 固定 LF 可以避免 core.autocrlf 在不同平台产生不一致的检出结果。
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.pdf binary

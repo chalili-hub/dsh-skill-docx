@@ -81,7 +81,8 @@ $d.Close(0); $w.Quit()
 | --- | --- |
 | `print` 中文报 gbk 错 | 写 UTF-8 文件再读；不要往控制台打中文 |
 | `json.load` 报 `Unexpected UTF-8 BOM` | PowerShell `Set-Content -Encoding UTF8` 会写 BOM。读 JSON/CSV/TSV 一律用 `encoding="utf-8-sig"`（同时兼容有/无 BOM） |
-| PowerShell 里 python 输出乱码 | 同上；或 `$OutputEncoding`/`chcp 65001`（仍不可靠，优先落文件） |
+| Windows PowerShell 5.1 里中文乱码 | 控制台默认 GBK 且不会自动切 UTF-8，同一份 UTF-8 文件可能"看起来"是乱码（`read` 工具读却是好的）。判断文件是否真损坏：`[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($f))` 并检查有无 U+FFFD |
+| 调 HTTP API 发含中文的 JSON body 变成 `?` | PS 5.1 的 `Invoke-RestMethod -Body <字符串>` 不按 UTF-8 编码。必须传字节数组：`-Body ([Text.Encoding]::UTF8.GetBytes($json)) -ContentType 'application/json; charset=utf-8'` |
 | matplotlib 中文方框 | 见 writing.md：含中文的文本别用 `family="monospace"` |
 | matplotlib `tight_layout` 警告 | 改用 `fig.subplots_adjust(left=..., right=..., top=..., bottom=...)` 显式给边距（长 y 标签需要更宽的左边距） |
 | docx 打开提示"内容有问题" | 检查是否用了非法 XML 元素顺序（`w:shd` 必须在 `pPr` 内的正确位置附近，追加到末尾通常安全） |
